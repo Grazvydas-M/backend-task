@@ -21,8 +21,11 @@ class Trip
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATE_IMMUTABLE)]
-    private ?DateTimeImmutable $duration = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?DateTimeImmutable $startedAt;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $endedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'trips')]
     #[ORM\JoinColumn(name: 'scooter_id', referencedColumnName: 'id', nullable: false)]
@@ -38,18 +41,6 @@ class Trip
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getDuration(): DateTimeImmutable
-    {
-        return $this->duration;
-    }
-
-    public function setDuration(DateTimeImmutable $duration): Trip
-    {
-        $this->duration = $duration;
-
-        return $this;
     }
 
     public function getScooter(): Scooter
@@ -84,6 +75,30 @@ class Trip
     public function setStatus(TripStatus $status): Trip
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getStartedAt(): ?DateTimeImmutable
+    {
+        return $this->startedAt;
+    }
+
+    public function setStartedAt(?DateTimeImmutable $startedAt): Trip
+    {
+        $this->startedAt = $startedAt;
+
+        return $this;
+    }
+
+    public function getEndedAt(): ?DateTimeImmutable
+    {
+        return $this->endedAt;
+    }
+
+    public function setEndedAt(?DateTimeImmutable $endedAt): Trip
+    {
+        $this->endedAt = $endedAt;
 
         return $this;
     }

@@ -84,7 +84,7 @@ class User
     {
         if (!$this->trips->contains($trip)) {
             $this->trips->add($trip);
-            $trip->setUserId($this);
+            $trip->setUser($this);
         }
 
         return $this;

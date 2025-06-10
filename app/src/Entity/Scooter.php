@@ -109,18 +109,7 @@ class Scooter
     {
         if (!$this->trips->contains($trip)) {
             $this->trips->add($trip);
-            $trip->setScooterId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTrip(Trip $trip): Scooter
-    {
-        if ($this->trips->removeElement($trip)) {
-            if ($trip->getScooterId() === $this) {
-                $trip->setScooterId(null);
-            }
+            $trip->setScooter($this);
         }
 
         return $this;
