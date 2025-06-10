@@ -2,8 +2,10 @@
 
 namespace App\Entity;
 
+use App\Enum\TripEventType;
 use App\Repository\TripEventRepository;
 use DateTime;
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -21,8 +23,11 @@ class TripEvent
     #[ORM\Column(name: 'longitude', type: 'float')]
     private float $longitude;
 
-    #[ORM\Column(name: 'time', type: Types::TIME_MUTABLE)]
-    private DateTime $time;
+    #[ORM\Column(enumType: TripEventType::class)]
+    private TripEventType $eventType;
+
+    #[ORM\Column(name: 'time', type: Types::DATETIME_IMMUTABLE)]
+    private DateTimeImmutable $time;
 
     #[ORM\ManyToOne(targetEntity: Trip::class)]
     private Trip $trip;
@@ -56,12 +61,12 @@ class TripEvent
         return $this;
     }
 
-    public function getTime(): DateTime
+    public function getTime(): DateTimeImmutable
     {
         return $this->time;
     }
 
-    public function setTime(DateTime $time): TripEvent
+    public function setTime(DateTimeImmutable $time): TripEvent
     {
         $this->time = $time;
 
@@ -76,6 +81,18 @@ class TripEvent
     public function setTrip(Trip $trip): TripEvent
     {
         $this->trip = $trip;
+
+        return $this;
+    }
+
+    public function getEventType(): TripEventType
+    {
+        return $this->eventType;
+    }
+
+    public function setEventType(TripEventType $eventType): TripEvent
+    {
+        $this->eventType = $eventType;
 
         return $this;
     }

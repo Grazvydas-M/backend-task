@@ -7,3 +7,6 @@ parameters:
     paths:
         - src/
         - tests/
+
+    ignoreErrors:
+        - '#Attribute class Gedmo\\Mapping\\Annotation\\Timestampable does not have the class target#'
