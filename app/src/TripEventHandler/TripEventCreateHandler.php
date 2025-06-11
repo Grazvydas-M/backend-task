@@ -2,9 +2,10 @@
 
 namespace App\TripEventHandler;
 
-use App\Dto\TripEventDto;
+
 use App\Enum\ScooterStatus;
 use App\Enum\TripEventType;
+use App\Enum\TripStatus;
 use App\Factory\TripEventFactory;
 use App\Factory\TripFactory;
 use App\Repository\TripEventRepository;
@@ -25,11 +26,11 @@ readonly class TripEventCreateHandler implements TripEventHandlerInterface
         return $eventType === TripEventType::TRIP_STARTED;
     }
 
-    public function handle(TripEventDto $tripEventDto): void
+    public function handle($tripEventDto): void
     {
-        $trip = $this->tripFactory->createFromDto($tripEventDto);
         $tripEvent = $this->tripEventFactory->createFromDto($tripEventDto);
-
+        $trip = $tripEventDto->getTrip();
+        $trip->setStatus(TripStatus::STARTED);
         $tripEvent->setTrip($trip);
         $scooter = $trip->getScooter();
         $scooter->setStatus(ScooterStatus::OCCUPIED);
