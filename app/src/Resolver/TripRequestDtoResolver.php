@@ -3,23 +3,25 @@
 namespace App\Resolver;
 
 use App\Dto\Request\TripCreateRequestDto;
-use App\Dto\Request\TripEventCreateRequestDto;
-use App\Repository\TripRepository;
+use App\Enum\TripEventType;
+use App\Repository\ScooterRepository;
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-readonly class TripEventRequestDtoResolver implements ValueResolverInterface
+readonly class TripRequestDtoResolver implements ValueResolverInterface
 {
     public function __construct(
-        private TripRepository $tripRepository,
+        private UserRepository $userRepository,
+        private ScooterRepository $scooterRepository,
     ) {
     }
 
     public function supports(Request $request, ArgumentMetadata $argument): bool
     {
-        return $argument->getType() === TripEventCreateRequestDto::class;
+        return $argument->getType() === TripCreateRequestDto::class;
     }
 
     /**
@@ -27,25 +29,26 @@ readonly class TripEventRequestDtoResolver implements ValueResolverInterface
      */
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
-        $tripId = $request->attributes->get('id');
         $data = json_decode($request->getContent(), true);
 
-        if (!is_array($data) || !isset($tripId, $data['latitude'], $data['longitude'])) {
+        if (!is_array($data) || !isset($data['userId'], $data['scooterId'])) {
             throw new BadRequestHttpException('Invalid or missing request data');
         }
 
-        $trip = $this->tripRepository->find($tripId);
-        if (!$trip) {
-            throw new BadRequestHttpException('Trip not found');
+        $user = $this->userRepository->find($data['userId']);
+        if (!$user) {
+            throw new BadRequestHttpException('User not found');
         }
 
-        $latitude = filter_var($data['latitude'], FILTER_VALIDATE_FLOAT);
-        $longitude = filter_var($data['longitude'], FILTER_VALIDATE_FLOAT);
+        $scooter = $this->scooterRepository->find($data['scooterId']);
+        if (!$scooter) {
+            throw new BadRequestHttpException('Scooter not found');
+        }
 
-        if (!$latitude || !$longitude) {
+        if (!is_string($data['type'])) {
             throw new BadRequestHttpException('Invalid type');
         }
 
-        yield new TripEventCreateRequestDto($trip, $latitude, $longitude);
+        yield new TripCreateRequestDto($user, $scooter);
     }
 }

@@ -1,15 +1,17 @@
 <?php
 
-namespace App\Dto;
+namespace App\Dto\Request;
 
 use App\Entity\Trip;
+use Symfony\Component\Validator\Constraints as Assert;
 
-readonly class TripEventDto
+class TripEventCreateRequestDto
 {
     public function __construct(
-        private Trip $trip,
-        private float $latitude,
-        private float $longitude,
+        #[Assert\NotNull]
+        private readonly Trip $trip,
+        private $latitude,
+        private $longitude,
     ) {
     }
 
