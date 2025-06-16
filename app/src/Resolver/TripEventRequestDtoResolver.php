@@ -4,6 +4,7 @@ namespace App\Resolver;
 
 use App\Dto\Request\TripCreateRequestDto;
 use App\Dto\Request\TripEventCreateRequestDto;
+use App\Enum\TripEventType;
 use App\Repository\TripRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
@@ -30,7 +31,7 @@ readonly class TripEventRequestDtoResolver implements ValueResolverInterface
         $tripId = $request->attributes->get('id');
         $data = json_decode($request->getContent(), true);
 
-        if (!is_array($data) || !isset($tripId, $data['latitude'], $data['longitude'])) {
+        if (!is_array($data) || !isset($tripId, $data['latitude'], $data['longitude'], $data['eventType'])) {
             throw new BadRequestHttpException('Invalid or missing request data');
         }
 
@@ -43,9 +44,15 @@ readonly class TripEventRequestDtoResolver implements ValueResolverInterface
         $longitude = filter_var($data['longitude'], FILTER_VALIDATE_FLOAT);
 
         if (!$latitude || !$longitude) {
-            throw new BadRequestHttpException('Invalid type');
+            throw new BadRequestHttpException('Invalid coordinates');
         }
 
-        yield new TripEventCreateRequestDto($trip, $latitude, $longitude);
+        $eventType = TripEventType::tryFrom($data['eventType']);
+
+        if (!$eventType) {
+            throw new BadRequestHttpException('Invalid event type');
+        }
+
+        yield new TripEventCreateRequestDto($trip, $latitude, $longitude, $eventType);
     }
 }
