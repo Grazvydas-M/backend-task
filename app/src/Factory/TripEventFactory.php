@@ -16,6 +16,7 @@ class TripEventFactory
             $tripEventCreateRequestDto->getTrip(),
             $tripEventCreateRequestDto->getLatitude(),
             $tripEventCreateRequestDto->getLongitude(),
+            $tripEventCreateRequestDto->getEventType()
         );
     }
 
@@ -25,7 +26,7 @@ class TripEventFactory
         $tripEvent->setLatitude($tripEventDto->getLatitude())
             ->setLongitude($tripEventDto->getLongitude())
             ->setTime(new DateTimeImmutable())
-            ->setEventType(TripEventType::TRIP_STARTED);
+            ->setEventType($tripEventDto->getEventType());
 
         return $tripEvent;
     }

@@ -3,6 +3,7 @@
 namespace App\Dto;
 
 use App\Entity\Trip;
+use App\Enum\TripEventType;
 
 readonly class TripEventDto
 {
@@ -10,6 +11,7 @@ readonly class TripEventDto
         private Trip $trip,
         private float $latitude,
         private float $longitude,
+        private TripEventType $eventType
     ) {
     }
 
@@ -26,5 +28,10 @@ readonly class TripEventDto
     public function getLongitude(): float
     {
         return $this->longitude;
+    }
+
+    public function getEventType(): TripEventType
+    {
+        return $this->eventType;
     }
 }
